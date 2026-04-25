@@ -1,0 +1,177 @@
+MODULE 2: ROUTE OPTIMIZATION CORE (GRAPH ALGORITHMS)
+🎯 Objective
+
+To compute optimal delivery routes that:
+
+Minimize distance / fuel / time
+Ensure on-time delivery
+Handle different road conditions
+🌍 Real-World Modeling
+
+You convert the city into a graph:
+
+Real World	Graph
+Locations	Nodes
+Roads	Edges
+Distance/Time/Fuel	Edge Weights
+📊 Graph Representation (C++)
+
+Use Adjacency List (best for large graphs):
+
+#include <vector>
+using namespace std;
+
+vector<pair<int,int>> adj[10005]; 
+// node → (neighbor, weight)
+⚙️ CORE ALGORITHMS
+🔸 1. Dijkstra Algorithm (MAIN ROUTING ENGINE)
+✅ Use Case:
+Find shortest path from warehouse to all locations
+Works when weights are positive
+🔧 Implementation:
+#include <queue>
+#include <climits>
+
+void dijkstra(int src, int n) {
+    vector<int> dist(n, INT_MAX);
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> pq;
+
+    dist[src] = 0;
+    pq.push({0, src});
+
+    while (!pq.empty()) {
+        int d = pq.top().first;
+        int u = pq.top().second;
+        pq.pop();
+
+        for (auto it : adj[u]) {
+            int v = it.first;
+            int weight = it.second;
+
+            if (dist[v] > dist[u] + weight) {
+                dist[v] = dist[u] + weight;
+                pq.push({dist[v], v});
+            }
+        }
+    }
+
+    // Output
+    for (int i = 0; i < n; i++) {
+        cout << "Distance to " << i << " = " << dist[i] << endl;
+    }
+}
+🧠 Viva Line:
+
+“Dijkstra is used for efficient real-time routing when all edge weights are non-negative.”
+
+🔸 2. Bellman-Ford Algorithm (ADVANCED CASE)
+✅ Use Case:
+Handles negative weights
+Useful if:
+Traffic penalties
+Dynamic cost adjustments
+🔧 Implementation:
+struct Edge {
+    int u, v, w;
+};
+
+void bellmanFord(int src, int n, vector<Edge>& edges) {
+    vector<int> dist(n, INT_MAX);
+    dist[src] = 0;
+
+    for (int i = 0; i < n - 1; i++) {
+        for (auto e : edges) {
+            if (dist[e.u] != INT_MAX && dist[e.u] + e.w < dist[e.v]) {
+                dist[e.v] = dist[e.u] + e.w;
+            }
+        }
+    }
+
+    // Check negative cycle
+    for (auto e : edges) {
+        if (dist[e.u] != INT_MAX && dist[e.u] + e.w < dist[e.v]) {
+            cout << "Negative cycle detected\n";
+        }
+    }
+}
+🧠 Viva Line:
+
+“Bellman-Ford is slower but more flexible, as it detects negative cycles and handles dynamic cost scenarios.”
+
+🔸 3. Minimum Spanning Tree (MST)
+✅ Use Case:
+Design minimum cost road network
+Reduce infrastructure cost
+🔹 Kruskal’s Algorithm (Using Union-Find)
+struct Edge {
+    int u, v, w;
+};
+
+vector<int> parent;
+
+int find(int x) {
+    if (parent[x] == x) return x;
+    return parent[x] = find(parent[x]);
+}
+
+void unionSet(int a, int b) {
+    a = find(a);
+    b = find(b);
+    parent[a] = b;
+}
+
+void kruskal(int n, vector<Edge>& edges) {
+    sort(edges.begin(), edges.end(), [](Edge a, Edge b) {
+        return a.w < b.w;
+    });
+
+    parent.resize(n);
+    for (int i = 0; i < n; i++) parent[i] = i;
+
+    int cost = 0;
+
+    for (auto e : edges) {
+        if (find(e.u) != find(e.v)) {
+            unionSet(e.u, e.v);
+            cost += e.w;
+        }
+    }
+
+    cout << "MST Cost = " << cost << endl;
+}
+🧠 Viva Line:
+
+“MST helps in minimizing total infrastructure cost when designing the logistics network.”
+
+🔸 4. BFS / DFS (VALIDATION)
+✅ Use Case:
+Check if all locations are reachable
+Detect disconnected regions
+BFS:
+#include <queue>
+
+void bfs(int start, int n) {
+    vector<bool> visited(n, false);
+    queue<int> q;
+
+    q.push(start);
+    visited[start] = true;
+
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+
+        cout << u << " ";
+
+        for (auto it : adj[u]) {
+            int v = it.first;
+            if (!visited[v]) {
+                visited[v] = true;
+                q.push(v);
+            }
+        }
+    }
+}
+🧠 Viva Line:
+
+“BFS ensures connectivity, meaning all delivery locations are reachable from the warehouse.”
