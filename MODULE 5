@@ -1,0 +1,63 @@
+MODULE 5 – PROPER CODE (DIVIDE & CONQUER)
+✅ 1. Merge Sort (CORE D&C IMPLEMENTATION)
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Delivery {
+    int id, deadline, priority;
+};
+
+// Merge function
+void merge(vector<Delivery>& arr, int l, int m, int r) {
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    vector<Delivery> L(n1), R(n2);
+
+    for (int i = 0; i < n1; i++) L[i] = arr[l + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
+
+    int i = 0, j = 0, k = l;
+
+    while (i < n1 && j < n2) {
+        if (L[i].deadline <= R[j].deadline) {
+            arr[k++] = L[i++];
+        } else {
+            arr[k++] = R[j++];
+        }
+    }
+
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+// Divide & Conquer
+void mergeSort(vector<Delivery>& arr, int l, int r) {
+    if (l >= r) return;
+
+    int mid = (l + r) / 2;
+
+    mergeSort(arr, l, mid);     // Divide
+    mergeSort(arr, mid + 1, r); // Divide
+
+    merge(arr, l, mid, r);      // Conquer
+}
+
+// Driver
+int main() {
+    vector<Delivery> deliveries = {
+        {1, 5, 2},
+        {2, 2, 3},
+        {3, 8, 1},
+        {4, 1, 5}
+    };
+
+    mergeSort(deliveries, 0, deliveries.size() - 1);
+
+    cout << "Sorted by Deadline:\n";
+    for (auto d : deliveries) {
+        cout << "ID: " << d.id << " Deadline: " << d.deadline << endl;
+    }
+
+    return 0;
+}
