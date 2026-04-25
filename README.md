@@ -178,3 +178,81 @@ All-Pairs Shortest Path Matrix:
 Say this confidently:
 
 “We first applied greedy for fast approximation, then refined the solution using dynamic programming to ensure global optimality.”
+
+MODULE 5 : 
+1. Parallel Merge Sort (Handling Massive Requests)
+📦 Problem
+
+When:
+
+1 million+ delivery requests arrive
+Single-thread sorting becomes slow
+💡 Solution
+Split data into chunks
+Sort each chunk independently
+Merge results
+
+
+2. Closest Pair of Warehouses
+📦 Problem
+
+Find the two closest warehouses to optimize:
+
+Redistribution
+Backup routing
+💡 Idea:
+
+Instead of checking all pairs (O(n²)):
+
+👉 Use Divide & Conquer → O(n log n)
+
+🧠 Concept:
+Divide points into two halves
+Find closest in each half
+Check boundary region
+🧠 Viva Line:
+
+“Divide and conquer reduces complexity from quadratic to logarithmic-linear in spatial problems.”
+
+🔸 3. Zone-Based Network Partitioning
+📦 Problem
+
+Large cities are hard to manage as one graph
+
+💡 Solution:
+
+Divide city into:
+
+Zones / clusters
+Each zone handled independently
+Example:
+Delhi → North, South, East, West zones
+Each has:
+Own sorting
+Own routing
+🧠 Viva Line:
+
+“Dividing the network into zones reduces computational overhead and improves parallel processing.”
+
+📊 COMPLEXITY ANALYSIS
+Approach	Time Complexity
+Naive (no divide)	O(n²)
+Divide & Conquer	O(n log n)
+🔁 REAL-WORLD EXECUTION
+Large batch of delivery requests arrives
+System splits into chunks
+Each chunk:
+Sorted independently
+Processed separately
+Results merged
+Zones processed in parallel
+📦 SAMPLE OUTPUT (CONCEPTUAL)
+Zone 1 processed: 500 deliveries
+Zone 2 processed: 480 deliveries
+
+Closest Warehouses:
+Warehouse 2 and 5 → Distance: 3 km
+
+Total processing time reduced by 40%
+
+“Divide and conquer improves scalability by breaking large logistics problems into smaller subproblems. It is used in sorting large datasets, spatial optimization like closest warehouse detection, and partitioning the network into zones for efficient parallel processing.”
