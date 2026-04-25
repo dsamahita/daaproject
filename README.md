@@ -102,3 +102,26 @@ Step 3: Heap (new order arrives)
 🧠 WHAT YOU SAY IN VIVA (IMPORTANT)
 
 “In real-world execution, the sorting module operates in cycles. Orders are fetched periodically and sorted by deadlines using stable sorting. Then priority-based ranking is applied. For dynamic incoming orders, a heap-based priority queue is used to ensure real-time responsiveness. This ensures both fairness and efficiency in delivery scheduling.”
+
+
+🔁 REAL-WORLD EXECUTION FLOW FOR MODULE2
+Sorted deliveries come from Module 1
+System selects next delivery
+Runs Dijkstra → finds shortest path
+Assigns route to vehicle
+If traffic changes → Bellman-Ford adjusts
+BFS checks if route is reachable
+📦 SAMPLE OUTPUT
+Shortest distances from warehouse:
+0 → 0
+1 → 4
+2 → 6
+3 → 8
+
+MST Cost = 25
+
+Reachable nodes:
+0 1 2 3
+🧠 FINAL VIVA EXPLANATION
+
+“This module models the logistics network as a weighted graph. Dijkstra’s algorithm is used for efficient route optimization, Bellman-Ford handles dynamic or negative weights, MST minimizes network cost, and BFS ensures connectivity. Together, these algorithms enable optimal and reliable delivery routing.”
