@@ -141,3 +141,40 @@ Max value → Knapsack
 Max profit → Job Scheduling
 Selected deliveries → sent to routing (Module 2)
 “This module uses greedy algorithms to assign deliveries efficiently. Activity selection maximizes the number of deliveries, fractional knapsack maximizes value per vehicle, and job scheduling ensures high-profit deliveries are prioritized. However, greedy approaches may fail in some cases, which is addressed using dynamic programming in the next module.”
+
+
+COMPLEXITY ANALYSIS OF MODULE 4 
+Algorithm	Time Complexity	Space
+0/1 Knapsack	O(nW)	O(nW)
+Multi-Stage	O(n²)	O(n)
+Floyd-Warshall	O(n³)	O(n²)
+⚖️ GREEDY vs DP (VERY IMPORTANT TABLE)
+Problem	Greedy	DP
+Knapsack	❌ Not optimal	✅ Optimal
+Speed	Fast	Slower
+Accuracy	Approx	Exact
+🔁 REAL-WORLD EXECUTION FLOW
+Module 3 assigns deliveries (greedy)
+DP refines:
+Best combination of packages
+Best multi-stop route
+Floyd-Warshall precomputes distances
+System picks minimum cost solution
+📦 SAMPLE OUTPUT
+Max Value (Knapsack): 220
+
+Minimum Multi-Stage Cost: 15
+
+All-Pairs Shortest Path Matrix:
+0 3 5
+2 0 4
+1 2 0
+🧠 FINAL VIVA EXPLANATION (USE THIS EXACTLY)
+
+“This module uses dynamic programming to achieve optimal solutions where greedy approaches fail. The 0/1 knapsack ensures the best combination of deliveries under capacity constraints, multi-stage DP minimizes total route cost, and Floyd-Warshall computes all-pairs shortest paths for efficient routing decisions.”
+
+⚠️ WHAT WILL IMPRESS YOUR PROFESSOR
+
+Say this confidently:
+
+“We first applied greedy for fast approximation, then refined the solution using dynamic programming to ensure global optimality.”
