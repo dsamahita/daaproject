@@ -1,49 +1,30 @@
 MODULE 4: DYNAMIC PROGRAMMING (OPTIMAL COST MINIMIZATION)
-🎯 Objective
+Objective
 
 To compute globally optimal solutions where greedy fails, such as:
 
 Maximizing delivery value under strict constraints
 Minimizing total delivery cost across multiple stops
 Precomputing shortest paths between all locations
-🧠 Why DP is Needed (VERY IMPORTANT FOR VIVA)
 
 “Greedy makes local decisions, but logistics often requires global optimization. Dynamic Programming ensures optimal solutions by solving overlapping subproblems and storing results.”
 
-⚙️ CORE PROBLEMS YOU MUST IMPLEMENT
-🔸 1. 0/1 Knapsack (MOST IMPORTANT)
-📦 Problem
+#include <bits/stdc++.h>
+using namespace std;
 
-Each vehicle:
-
-Has fixed capacity
-Each delivery has value & weight
-You cannot split deliveries
-
-👉 Goal:
-Maximize total value
-
-🧠 DP Recurrence
-
-dp[i][w]=max(dp[i−1][w], value
-i
-	​
-
-+dp[i−1][w−weight
-i
-	​
-
-])
-
-🔧 Implementation (C++)
 int knapsack(int W, vector<int>& wt, vector<int>& val, int n) {
+    // DP table
     vector<vector<int>> dp(n+1, vector<int>(W+1, 0));
 
+    // Fill table
     for (int i = 1; i <= n; i++) {
         for (int w = 0; w <= W; w++) {
+
             if (wt[i-1] <= w) {
-                dp[i][w] = max(dp[i-1][w],
-                               val[i-1] + dp[i-1][w - wt[i-1]]);
+                dp[i][w] = max(
+                    dp[i-1][w], 
+                    val[i-1] + dp[i-1][w - wt[i-1]]
+                );
             } else {
                 dp[i][w] = dp[i-1][w];
             }
@@ -52,69 +33,14 @@ int knapsack(int W, vector<int>& wt, vector<int>& val, int n) {
 
     return dp[n][W];
 }
-🧠 Viva Line:
 
-“Unlike fractional knapsack, 0/1 knapsack requires DP because items cannot be split, and greedy may miss the optimal combination.”
+int main() {
+    vector<int> wt = {10, 20, 30};
+    vector<int> val = {60, 100, 120};
+    int W = 50;
 
-🔸 2. Multi-Stage Delivery Cost Optimization
-📦 Problem
+    cout << "Maximum Value: " 
+         << knapsack(W, wt, val, wt.size());
 
-A delivery route has multiple stages (warehouse → hub → customer).
-
-👉 Goal:
-Minimize total cost across all stages
-
-🧠 Idea:
-
-Break into stages and store minimum cost to reach each stage.
-
-🔧 Implementation
-int multiStageGraph(int stages, vector<vector<int>>& cost) {
-    int n = cost.size();
-    vector<int> dp(n, INT_MAX);
-
-    dp[n-1] = 0; // last node
-
-    for (int i = n-2; i >= 0; i--) {
-        for (int j = i+1; j < n; j++) {
-            if (cost[i][j] != INT_MAX) {
-                dp[i] = min(dp[i], cost[i][j] + dp[j]);
-            }
-        }
-    }
-
-    return dp[0];
+    return 0;
 }
-🧠 Viva Line:
-
-“This models multi-stop delivery planning where each stage decision depends on future costs.”
-
-🔸 3. Floyd-Warshall (All-Pairs Shortest Path)
-📦 Problem
-
-Find shortest path between every pair of locations
-
-👉 Useful for:
-
-Precomputing routes
-Fast lookup during delivery
-🧠 DP Recurrence
-
-dist[i][j]=min(dist[i][j], dist[i][k]+dist[k][j])
-
-🔧 Implementation
-void floydWarshall(vector<vector<int>>& dist, int n) {
-    for (int k = 0; k < n; k++) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX) {
-                    dist[i][j] = min(dist[i][j],
-                                     dist[i][k] + dist[k][j]);
-                }
-            }
-        }
-    }
-}
-🧠 Viva Line:
-
-“Floyd-Warshall uses dynamic programming to compute shortest paths between all pairs, enabling constant-time route lookup.”
