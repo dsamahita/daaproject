@@ -13,80 +13,58 @@ So that:
 Urgent deliveries are handled first
 High-value customers are prioritized
 Overall system efficiency improves
-
-Input Structure
-
-Each delivery request contains:
+#include <bits/stdc++.h>
+using namespace std;
 
 struct Delivery {
     int id;
-    int weight;
     int deadline;
     int priority;
-    int distance;
 };
- DESIGN APPROACH
 
-We use three different sorting strategies, each solving a specific real-world need:
+// ---------------- MERGE SORT (by deadline) ----------------
 
- 1. Merge Sort (Deadline-Based Sorting)
- Purpose:
-
-Sort deliveries by earliest deadline first
-
- Why Merge Sort?
-Stable sorting → maintains fairness
-Time complexity = O(n log n)
-Good for large datasets
- Implementation:
 void merge(vector<Delivery>& arr, int l, int m, int r) {
-    int n1 = m - l + 1;
-    int n2 = r - m;
-
-    vector<Delivery> L(n1), R(n2);
-
-    for (int i = 0; i < n1; i++) L[i] = arr[l + i];
-    for (int j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
+    vector<Delivery> L(arr.begin()+l, arr.begin()+m+1);
+    vector<Delivery> R(arr.begin()+m+1, arr.begin()+r+1);
 
     int i = 0, j = 0, k = l;
 
-    while (i < n1 && j < n2) {
-        if (L[i].deadline <= R[j].deadline) {
+    while (i < L.size() && j < R.size()) {
+        if (L[i].deadline <= R[j].deadline)
             arr[k++] = L[i++];
-        } else {
+        else
             arr[k++] = R[j++];
-        }
     }
 
-    while (i < n1) arr[k++] = L[i++];
-    while (j < n2) arr[k++] = R[j++];
+    while (i < L.size()) arr[k++] = L[i++];
+    while (j < R.size()) arr[k++] = R[j++];
 }
 
 void mergeSort(vector<Delivery>& arr, int l, int r) {
-    if (l < r) {
-        int m = (l + r) / 2;
-        mergeSort(arr, l, m);
-        mergeSort(arr, m + 1, r);
-        merge(arr, l, m, r);
-    }
+    if (l >= r) return;
+
+    int m = (l + r) / 2;
+
+    mergeSort(arr, l, m);
+    mergeSort(arr, m + 1, r);
+
+    merge(arr, l, m, r);
 }
 
-2. Quick Sort (Priority-Based Ranking)
- Purpose:
+// ---------------- QUICK SORT (by priority) ----------------
 
-Sort deliveries by highest customer priority first
-
-🔧 Implementation:
 int partition(vector<Delivery>& arr, int low, int high) {
     int pivot = arr[high].priority;
     int i = low - 1;
 
     for (int j = low; j < high; j++) {
-        if (arr[j].priority > pivot) { // higher priority first
+        if (arr[j].priority > pivot) {
             i++;
             swap(arr[i], arr[j]);
         }
     }
+
     swap(arr[i + 1], arr[high]);
     return i + 1;
 }
@@ -94,38 +72,38 @@ int partition(vector<Delivery>& arr, int low, int high) {
 void quickSort(vector<Delivery>& arr, int low, int high) {
     if (low < high) {
         int pi = partition(arr, low, high);
+
         quickSort(arr, low, pi - 1);
         quickSort(arr, pi + 1, high);
     }
 }
 
+// ---------------- MAIN ----------------
 
-3. Heap (Priority Queue – Dynamic Scheduling)
- Purpose:
+int main() {
+    vector<Delivery> deliveries = {
+        {1, 5, 2},
+        {2, 2, 5},
+        {3, 3, 1},
+        {4, 1, 4}
+    };
 
-Handle real-time incoming deliveries
+    // Sort by deadline
+    mergeSort(deliveries, 0, deliveries.size() - 1);
 
-Implementation:
-#include <queue>
+    cout << "Sorted by Deadline:\n";
+    for (auto d : deliveries)
+        cout << "ID: " << d.id << " Deadline: " << d.deadline << endl;
 
-struct Compare {
-    bool operator()(Delivery a, Delivery b) {
-        return a.priority < b.priority; // max heap
-    }
-};
+    // Sort by priority
+    quickSort(deliveries, 0, deliveries.size() - 1);
 
-priority_queue<Delivery, vector<Delivery>, Compare> pq;
-Usage:
-pq.push({1, 10, 5, 3, 20});
-pq.push({2, 5, 2, 5, 15});
+    cout << "\nSorted by Priority:\n";
+    for (auto d : deliveries)
+        cout << "ID: " << d.id << " Priority: " << d.priority << endl;
 
-while (!pq.empty()) {
-    Delivery d = pq.top();
-    pq.pop();
-    cout << d.id << " ";
+    return 0;
 }
-
-“Heap is used for dynamic prioritization where new delivery requests arrive in real time.”
 
 SAMPLE OUTPUT
 After Merge Sort (by deadline):
